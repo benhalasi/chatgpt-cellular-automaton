@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Docs Index</title>
+</head>
+<body>
+<h1>Contents of the docs folder</h1>
+<div id="list"></div>
+<script>
+    function buildGitHubPagesLink(repo, path) {
+      return 'https://' + repo + '.github.io/' + path;
+    }
+
+    function listDirectory(url, repo, path) {
+      // Default value for path
+      path = path || '';
+
+      // Return a promise that resolves to the list of items in the directory
+      return fetch(url)
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(items) {
+          // Create a new list element
+          var list = document.createElement('ul');
+
+          // Loop through the items in the directory
+          for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+
+            // Create a new list item element
+            var listItem = document.createElement('li');
+
+            if (item.type === 'dir') {
+              // If the item is a directory, create a folder icon and a sublist
+              var folder = document.createTextNode(item.name + '/');
+              listItem.appendChild(folder);
+              listDirectory(item.url, repo, path + item.name + '/').then(function(sublist) {
+                listItem.appendChild(sublist);
+              });
+            } else {
+              // If the item is a file, create a link to the GitHub Pages URL
+              var link = document.createElement('a');
+              link.setAttribute('href', buildGitHubPagesLink(repo, path + item.name));
+              link.setAttribute('target', '_blank');
+              link.textContent = item.name;
+              listItem.appendChild(link);
+            }
+            // Append the list item element to the list
+            list.appendChild(listItem);
+          }
+          return list;
+        });
+    }
+
+    listDirectory('https://api.github.com/repos/benhalasi/chatgpt-cellular-automaton/contents/docs', 'benhalasi', 'chatgpt-cellular-automaton/')
+      .then(function(list) {
+        document.getElementById('list').appendChild(list);
+      });
+
+</script>
+</body>
+</html>
