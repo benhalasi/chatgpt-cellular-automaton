@@ -22,25 +22,26 @@
         })
         .then(function(items) {
           // Create a new list element
-          var list = document.createElement('ul');
+          const list = document.createElement('ul');
 
           // Loop through the items in the directory
-          for (var i = 0; i < items.length; i++) {
-            var item = items[i];
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
 
             // Create a new list item element
-            var listItem = document.createElement('li');
+            const listItem = document.createElement('li');
 
             if (item.type === 'dir') {
               // If the item is a directory, create a folder icon and a sublist
-              var folder = document.createTextNode(item.name + '/');
+              const folder = document.createTextNode(item.name + '/');
               listItem.appendChild(folder);
+              // Append the sublist to the list item element
               listDirectory(item.url, repo, path + item.name + '/').then(function(sublist) {
                 listItem.appendChild(sublist);
               });
             } else {
               // If the item is a file, create a link to the GitHub Pages URL
-              var link = document.createElement('a');
+              const link = document.createElement('a');
               link.setAttribute('href', buildGitHubPagesLink(repo, path + item.name));
               link.setAttribute('target', '_blank');
               link.textContent = item.name;
@@ -57,7 +58,6 @@
       .then(function(list) {
         document.getElementById('list').appendChild(list);
       });
-
 </script>
 </body>
 </html>
