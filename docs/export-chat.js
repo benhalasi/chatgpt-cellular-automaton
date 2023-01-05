@@ -1,4 +1,4 @@
-(() => {
+((redactables) => {
   const mainNode = $('main')
   const text = [
     '<!DOCTYPE html>',
@@ -18,6 +18,7 @@
     '</main>',
     '</body>',
   ]
+  .map(line => redactables ? line.replaceAll(redactables, '[REDACTED]') : line)
   const textBlob = new Blob(text, {
     type: 'text/html',
   });
@@ -34,4 +35,4 @@
     .concat('.html');
   downloadAnchor.href = window.URL.createObjectURL(textBlob);
   downloadAnchor.click();
-})()
+})("{string literal or regexp to redact}")
